@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -23,6 +24,7 @@ import com.example.zcode.ui.screens.SettingsScreen
 import com.example.zcode.ui.screens.TerminalScreen
 import com.example.zcode.ui.screens.FilesScreen
 import com.example.zcode.ui.screens.SystemInfoScreen
+import com.example.zcode.ui.screens.LinuxEnvironmentsScreen
 import com.example.zcode.ui.theme.ZcodeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -80,6 +82,7 @@ fun ZcodeBottomNavigation(
     ) {
         val screens = listOf(
             NavigationItem.Terminal,
+            NavigationItem.Linux,
             NavigationItem.Files,
             NavigationItem.Network,
             NavigationItem.SystemInfo,
@@ -95,7 +98,7 @@ fun ZcodeBottomNavigation(
                         modifier = Modifier.size(24.dp)
                     )
                 },
-                label = { Text(screen.label) },
+                label = { Text(screen.label, maxLines = 1) },
                 selected = currentScreen == screen,
                 onClick = { onScreenSelected(screen) },
                 colors = NavigationBarItemDefaults.colors(
@@ -121,6 +124,9 @@ fun ZcodeNavGraph(
     ) {
         composable(NavigationItem.Terminal.route) {
             TerminalScreen()
+        }
+        composable(NavigationItem.Linux.route) {
+            LinuxEnvironmentsScreen()
         }
         composable(NavigationItem.Files.route) {
             com.example.zcode.ui.screens.FileExplorerPro(
@@ -158,6 +164,12 @@ sealed class NavigationItem(
         route = "terminal",
         label = "Terminal",
         icon = Icons.Filled.Code
+    )
+
+    data object Linux : NavigationItem(
+        route = "linux",
+        label = "Linux",
+        icon = Icons.Filled.Computer
     )
 
     data object Files : NavigationItem(

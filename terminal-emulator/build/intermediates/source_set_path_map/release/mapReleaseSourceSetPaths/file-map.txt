@@ -1,0 +1,8 @@
+com.termux.terminal.terminal-emulator-pngs-0 /home/and-loper/Zcode/terminal-emulator/build/generated/res/pngs/release
+com.termux.terminal.terminal-emulator-resValues-1 /home/and-loper/Zcode/terminal-emulator/build/generated/res/resValues/release
+com.termux.terminal.terminal-emulator-updated_navigation_xml-2 /home/and-loper/Zcode/terminal-emulator/build/generated/updated_navigation_xml/release
+com.termux.terminal.terminal-emulator-mergeReleaseResources-3 /home/and-loper/Zcode/terminal-emulator/build/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.termux.terminal.terminal-emulator-mergeReleaseResources-4 /home/and-loper/Zcode/terminal-emulator/build/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.termux.terminal.terminal-emulator-release-5 /home/and-loper/Zcode/terminal-emulator/build/intermediates/merged_res/release/mergeReleaseResources
+com.termux.terminal.terminal-emulator-main-6 /home/and-loper/Zcode/terminal-emulator/src/main/res
+com.termux.terminal.terminal-emulator-release-7 /home/and-loper/Zcode/terminal-emulator/src/release/res

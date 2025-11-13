@@ -21,6 +21,11 @@ data class UserPreferences(
     val transparencyLevel: Float = 0.95f,  // 0.0-1.0
     val glassmorphismEnabled: Boolean = true,
 
+    // General settings
+    val fontSize: Float = 14f,
+    val fontFamily: String = "monospace",
+    val autoSave: Boolean = true,
+
     // Network settings
     val natBridgeMode: String = "IPv4",  // IPv4, IPv6
     val showIPAddress: Boolean = true,
@@ -33,10 +38,15 @@ data class UserPreferences(
     val fastfetchTheme: String = "default",
     val showSystemInfo: Boolean = true,
 
-    // General settings
-    val fontSize: Float = 14f,
-    val fontFamily: String = "monospace",
-    val autoSave: Boolean = true,
+    // Terminal settings
+    val terminalFontSize: Float = 12f,
+    val terminalTheme: String = "default",
+    val wordWrap: Boolean = true,
+
+    // Linux settings
+    val defaultDistro: String = "Ubuntu",
+    val autoUpdatePackages: Boolean = false,
+    val enableRootAccess: Boolean = false,
 
     // Timestamps
     val createdAt: Long = System.currentTimeMillis(),

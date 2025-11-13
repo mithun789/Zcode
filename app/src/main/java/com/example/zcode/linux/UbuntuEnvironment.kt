@@ -249,17 +249,22 @@ class UbuntuEnvironment(private val context: Context) {
             export TMPDIR=${tmpDir.absolutePath}
             export TERM=xterm-256color
             export LANG=en_US.UTF-8
-            
-            # Colorful prompt
-            PS1='\[\033[01;32m\]zcode\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-            
+
+            # Initialize oh-my-posh if available
+            if [ -x /usr/bin/oh-my-posh ]; then
+                eval "$(oh-my-posh init bash --config /usr/share/oh-my-posh/themes/zcode.omp.json)"
+            else
+                # Fallback colorful prompt
+                PS1='\[\033[01;32m\]zcode\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+            fi
+
             # Aliases
             alias ll='ls -lah'
             alias la='ls -A'
             alias l='ls -CF'
             alias ..='cd ..'
             alias ...='cd ../..'
-            
+
             echo "Welcome to Zcode Ubuntu Environment!"
             echo "Type 'apt update' then 'apt install <package>' to install software"
         """.trimIndent())
@@ -269,15 +274,15 @@ class UbuntuEnvironment(private val context: Context) {
         bashrc.writeText("""
             # Zcode User Bash Configuration
             source /etc/profile
-            
+
             # Command history
             export HISTFILE=${homeDir.absolutePath}/.bash_history
             export HISTSIZE=10000
             export HISTFILESIZE=20000
-            
+
             # Custom functions
             mcd() { mkdir -p "$1" && cd "$1"; }
-            
+
         """.trimIndent())
     }
 
@@ -306,6 +311,119 @@ class UbuntuEnvironment(private val context: Context) {
             apt "$@"
         """.trimIndent())
         pkgScript.setExecutable(true)
+
+        // Install oh-my-posh
+        installOhMyPosh()
+    }
+
+    /**
+     * Install oh-my-posh for enhanced prompts
+     */
+    private fun installOhMyPosh() {
+        try {
+            // Create oh-my-posh binary (placeholder - in real implementation, download from GitHub)
+            val ohMyPoshScript = File(rootfsDir, "usr/bin/oh-my-posh")
+            ohMyPoshScript.writeText("""
+                #!/bin/bash
+                # oh-my-posh wrapper for Zcode
+                # In production, this would be the actual oh-my-posh binary
+
+                case "$1" in
+                    "init")
+                        # Initialize oh-my-posh for bash
+                        echo "export PS1='\[\e[32m\]\u@\h\[\e[00m\]:\[\e[34m\]\w\[\e[00m\]\$ '"
+                        ;;
+                    "print")
+                        # Print prompt (simplified)
+                        echo "zcode@linux:~$ "
+                        ;;
+                    *)
+                        echo "oh-my-posh: enhanced prompt engine"
+                        echo "Usage: oh-my-posh init bash"
+                        ;;
+                esac
+            """.trimIndent())
+            ohMyPoshScript.setExecutable(true)
+
+            // Create default oh-my-posh theme
+            val themesDir = File(rootfsDir, "usr/share/oh-my-posh/themes")
+            themesDir.mkdirs()
+
+            val defaultTheme = File(themesDir, "zcode.omp.json")
+            defaultTheme.writeText("""
+                {
+                    "blocks": [
+                        {
+                            "alignment": "left",
+                            "segments": [
+                                {
+                                    "background": "#007ACC",
+                                    "foreground": "#ffffff",
+                                    "powerline_symbol": "\\ue0b0",
+                                    "properties": {
+                                        "template": " \\uf0e7 "
+                                    },
+                                    "style": "powerline",
+                                    "type": "root"
+                                },
+                                {
+                                    "background": "#ef5350",
+                                    "foreground": "#ffffff",
+                                    "powerline_symbol": "\\ue0b0",
+                                    "properties": {
+                                        "template": " {{ .UserName }}@{{ .HostName }} "
+                                    },
+                                    "style": "powerline",
+                                    "type": "session"
+                                },
+                                {
+                                    "background": "#FFEB3B",
+                                    "foreground": "#000000",
+                                    "powerline_symbol": "\\ue0b0",
+                                    "properties": {
+                                        "style": "folder",
+                                        "template": " \\ue5ff {{ .Path }} "
+                                    },
+                                    "style": "powerline",
+                                    "type": "path"
+                                },
+                                {
+                                    "background": "#4CAF50",
+                                    "foreground": "#ffffff",
+                                    "powerline_symbol": "\\ue0b0",
+                                    "properties": {
+                                        "branch_icon": "\\ue725 ",
+                                        "template": " {{ .HEAD }} "
+                                    },
+                                    "style": "powerline",
+                                    "type": "git"
+                                }
+                            ],
+                            "type": "prompt"
+                        },
+                        {
+                            "alignment": "left",
+                            "newline": true,
+                            "segments": [
+                                {
+                                    "foreground": "#007ACC",
+                                    "properties": {
+                                        "template": "\\u276f "
+                                    },
+                                    "style": "plain",
+                                    "type": "text"
+                                }
+                            ],
+                            "type": "prompt"
+                        }
+                    ],
+                    "final_space": true
+                }
+            """.trimIndent())
+
+        } catch (e: Exception) {
+            // Oh-my-posh installation failed, continue without it
+        }
     }
 
     /**

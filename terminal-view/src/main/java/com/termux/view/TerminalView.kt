@@ -84,6 +84,7 @@ fun TerminalView(
 
     // Update terminal output with optimized rendering
     LaunchedEffect(session) {
+        var lastHash = 0
         while (true) {
             session?.emulator?.let { emulator ->
                 try {
@@ -105,15 +106,19 @@ fun TerminalView(
                         }
                     }
                     val newOutput = lines.joinToString("\n")
-                    if (newOutput != outputText) {
+                    val newHash = newOutput.hashCode()
+                    
+                    // Only update if content changed
+                    if (newHash != lastHash) {
                         outputText = newOutput
+                        lastHash = newHash
                         shouldScrollToBottom = true
                     }
                 } catch (_: Exception) {
                     // Ignore errors during rendering
                 }
             }
-            delay(80) // Optimized update frequency
+            delay(100) // Reduced frequency for better performance
         }
     }
 

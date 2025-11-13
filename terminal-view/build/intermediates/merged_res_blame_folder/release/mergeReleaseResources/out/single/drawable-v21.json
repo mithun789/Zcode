@@ -1,0 +1,6 @@
+[
+    {
+        "merged": "com.termux.view.terminal-view-release-39:/drawable-v21/notification_action_background.xml",
+        "source": "com.termux.view.terminal-view-core-1.12.0-17:/drawable-v21/notification_action_background.xml"
+    }
+]

@@ -2,6 +2,9 @@ package com.termux.terminal
 
 import android.content.Context
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -11,7 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue
  */
 class TerminalSession(
     private val context: Context,
-    private val changeCallback: SessionChangedCallback
+    private val changeCallback: SessionChangedCallback,
+    private val process: Process? = null // Optional: connect to real process
 ) {
 
     var emulator: TerminalEmulator? = null
@@ -25,8 +29,14 @@ class TerminalSession(
 
     private val inputQueue = LinkedBlockingQueue<String>()
     private var currentDirectory = ""
+    private var isConnectedToRealProcess = false
 
-    // Built-in commands
+    // Process streams for real shell execution
+    private var processInputStream: InputStream? = null
+    private var processOutputStream: OutputStream? = null
+    private var processErrorStream: InputStream? = null
+
+    // Built-in commands (only used when process is null)
     private val builtInCommands = mapOf<String, (List<String>) -> String>(
         "help" to ::cmdHelp,
         "ls" to ::cmdLs,
@@ -95,14 +105,20 @@ class TerminalSession(
                 24  // default rows
             )
 
-            mShellPid = android.os.Process.myPid()
-            mRunning = true
+            if (process != null) {
+                // Connect to real process
+                connectToProcess(process)
+            } else {
+                // Use built-in command interpreter
+                mShellPid = android.os.Process.myPid()
+                mRunning = true
 
-            // Start input processing thread
-            Thread { processInputLoop() }.start()
+                // Start input processing thread
+                Thread { processInputLoop() }.start()
 
-            // Send welcome message
-            sendWelcomeMessage()
+                // Send welcome message
+                sendWelcomeMessage()
+            }
 
         } catch (e: Exception) {
             throw RuntimeException("Failed to create terminal session", e)
@@ -110,66 +126,129 @@ class TerminalSession(
     }
 
     /**
-     * Send welcome message with responsive design
+     * Connect to a real process (Linux environment)
+     */
+    private fun connectToProcess(process: Process) {
+        try {
+            this.processInputStream = process.inputStream
+            this.processOutputStream = process.outputStream
+            this.processErrorStream = process.errorStream
+            mShellPid = android.os.Process.myPid()
+            mRunning = true
+            isConnectedToRealProcess = true
+
+            // Start threads to handle process I/O
+            Thread { processOutputReader() }.start()
+            Thread { processErrorReader() }.start()
+            Thread { processInputWriter() }.start()
+
+            // Send welcome message for Linux environment
+            sendLinuxWelcomeMessage()
+
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to connect to process", e)
+        }
+    }
+
+    /**
+     * Send welcome message with clean, Android-friendly design
      */
     private fun sendWelcomeMessage() {
-        // Get screen width for responsive welcome message
-        val screenWidth = try {
-            android.content.res.Resources.getSystem().displayMetrics.widthPixels
-        } catch (e: Exception) {
-            1080
-        }
-        
-        val isCompact = screenWidth < 720
-        
-        val welcome = if (isCompact) {
-            """
-
-   ###   ##  ###  ##  #####
-     #  #  #  #  #  # #    
-    #   #     #  #  # ##### 
-   #    #  #  #  #  # #     
-  ###    ##  ###  ##  #####
-
- Zcode Terminal v1.0
- Linux Environment
-
-Commands: help, ls, neofetch
-Type 'help' for all commands
-
-""".trimIndent()
-        } else {
-            """
-
- ######   ####   #####  #####  #####
-     ##  ##  ## ##   ## ##  ## ##   
-   ###   ##     ##   ## ##  ## ##### 
-  ##     ##  ## ##   ## ##  ## ##    
- ######   ####   #####  #####  #####
-
- Welcome to Zcode Terminal v1.0
- Built-in Linux Environment
-
-Available commands: help, ls, pwd, cd, neofetch
-Type 'help' for complete list
-
-""".trimIndent()
-        }
-
-        appendOutput(welcome)
+        // No welcome message - just show prompt
         showPrompt()
     }
 
     /**
-     * Show command prompt
+     * Send welcome message for Linux environment
+     */
+    private fun sendLinuxWelcomeMessage() {
+        // No welcome message - just show prompt for real environment
+        showPrompt()
+    }
+
+    /**
+     * Read output from process stdout
+     */
+    private fun processOutputReader() {
+        val buffer = ByteArray(4096)
+        try {
+            processInputStream?.let { input ->
+                while (mRunning) {
+                    val bytesRead = input.read(buffer)
+                    if (bytesRead == -1) break
+                    if (bytesRead > 0) {
+                        emulator?.append(buffer, bytesRead)
+                        changeCallback.onTextChanged(this)
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            // Process ended or error
+        } finally {
+            mRunning = false
+            changeCallback.onSessionFinished(this)
+        }
+    }
+
+    /**
+     * Read output from process stderr
+     */
+    private fun processErrorReader() {
+        val buffer = ByteArray(4096)
+        try {
+            processErrorStream?.let { error ->
+                while (mRunning) {
+                    val bytesRead = error.read(buffer)
+                    if (bytesRead == -1) break
+                    if (bytesRead > 0) {
+                        emulator?.append(buffer, bytesRead)
+                        changeCallback.onTextChanged(this)
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            // Process ended or error
+        }
+    }
+
+    /**
+     * Write input to process stdin
+     */
+    private fun processInputWriter() {
+        try {
+            while (mRunning) {
+                val input = inputQueue.take()
+                if (!mRunning) break
+
+                processOutputStream?.let { output ->
+                    output.write((input + "\n").toByteArray())
+                    output.flush()
+                }
+            }
+        } catch (e: InterruptedException) {
+            // Thread interrupted
+        } catch (e: IOException) {
+            // Process ended or error
+        }
+    }
+
+    /**
+     * Show command prompt with oh-my-posh style
      */
     private fun showPrompt() {
-        val prompt = "\nzcode:$currentDirectory$ "
+        val user = "user"
+        val host = "zcode"
+        val path = currentDirectory.substringAfterLast("/").let { 
+            if (it.isEmpty()) "~" else it 
+        }
+        
+        // oh-my-posh style: user@host:path❯ 
+        val prompt = "$user@$host:$path❯ "
         appendOutput(prompt)
     }
 
     /**
-     * Append output to terminal
+     * Append output to terminal (for command results only, not prompts or errors)
      */
     private fun appendOutput(text: String) {
         emulator?.append(text.toByteArray(), text.length)
@@ -177,7 +256,16 @@ Type 'help' for complete list
     }
 
     /**
-     * Process input loop
+     * Append text that should be displayed but not processed as command input
+     */
+    fun appendSystemMessage(text: String) {
+        val formattedText = if (text.startsWith("\n")) text else "\n$text\n"
+        emulator?.append(formattedText.toByteArray(), formattedText.length)
+        changeCallback.onTextChanged(this)
+    }
+
+    /**
+     * Process input loop (only for built-in commands)
      */
     private fun processInputLoop() {
         while (mRunning) {
@@ -185,8 +273,11 @@ Type 'help' for complete list
                 val input = inputQueue.take()
                 if (!mRunning) break
 
-                processCommand(input.trim())
-                showPrompt()
+                if (!isConnectedToRealProcess) {
+                    processCommand(input.trim())
+                    showPrompt()
+                }
+                // If connected to real process, input is sent via processInputWriter instead
 
             } catch (e: InterruptedException) {
                 break
@@ -207,12 +298,17 @@ Type 'help' for complete list
 
         // Execute command
         try {
-            val result = builtInCommands[command]?.invoke(args) ?: "Command not found: $command"
-
-            // Output result
-            if (result.isNotEmpty()) {
-                appendOutput("\n$result")
+            if (!isConnectedToRealProcess && builtInCommands.containsKey(command)) {
+                // Use built-in command
+                val result = builtInCommands[command]?.invoke(args) ?: ""
+                if (result.isNotEmpty()) {
+                    appendOutput("\n$result")
+                }
+            } else if (!isConnectedToRealProcess) {
+                // No real process and command not found in built-in
+                appendOutput("\nCommand not found: $command")
             }
+            // If connected to real process, do nothing - the process stdin/stdout will handle it
 
         } catch (e: Exception) {
             val error = "\nError executing command: ${e.message}"

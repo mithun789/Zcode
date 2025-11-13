@@ -6,6 +6,7 @@ import com.example.zcode.data.database.UserPreferencesDao
 import com.example.zcode.data.manager.ThemeManager
 import com.example.zcode.fastfetch.FastfetchIntegration
 import com.example.zcode.file_explorer.FileExplorer
+import com.example.zcode.linux.LinuxEnvironmentManager
 import com.example.zcode.network.IPAddressHandler
 import com.example.zcode.network.NATBridgeManager
 import dagger.Module
@@ -136,6 +137,27 @@ object SystemModule {
         @ApplicationContext context: Context
     ): FastfetchIntegration {
         return FastfetchIntegration(context)
+    }
+}
+
+/**
+ * LinuxModule - Hilt module for Linux environment management
+ *
+ * Provides Linux environment management instances
+ */
+@Module
+@InstallIn(SingletonComponent::class)
+object LinuxModule {
+
+    /**
+     * Provide singleton instance of LinuxEnvironmentManager
+     */
+    @Provides
+    @Singleton
+    fun provideLinuxEnvironmentManager(
+        @ApplicationContext context: Context
+    ): LinuxEnvironmentManager {
+        return LinuxEnvironmentManager(context)
     }
 }
 

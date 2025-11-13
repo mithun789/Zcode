@@ -396,16 +396,326 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Initialize default preferences if none exist
+     * Get font size setting
      */
-    suspend fun initializeDefaultPreferences() {
+    suspend fun getFontSize(): Float {
+        return dao.getUserPreferencesSync()?.fontSize ?: 14f
+    }
+
+    /**
+     * Set font size and persist to database
+     *
+     * @param fontSize Font size value
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setFontSize(fontSize: Float) {
         try {
-            val existing = dao.getUserPreferencesSync()
-            if (existing == null) {
-                dao.insertPreferences(UserPreferences())
-            }
+            dao.updateFontSize(fontSize)
         } catch (e: Exception) {
-            throw ThemeManagerException("Failed to initialize default preferences: ${e.message}", e)
+            throw ThemeManagerException("Failed to set font size: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get font family setting
+     */
+    suspend fun getFontFamily(): String {
+        return dao.getUserPreferencesSync()?.fontFamily ?: "monospace"
+    }
+
+    /**
+     * Set font family and persist to database
+     *
+     * @param fontFamily Font family name
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setFontFamily(fontFamily: String) {
+        try {
+            dao.updateFontFamily(fontFamily)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set font family: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get auto save setting
+     */
+    suspend fun getAutoSave(): Boolean {
+        return dao.getUserPreferencesSync()?.autoSave ?: true
+    }
+
+    /**
+     * Set auto save and persist to database
+     *
+     * @param autoSave Auto save enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setAutoSave(autoSave: Boolean) {
+        try {
+            dao.updateAutoSave(autoSave)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set auto save: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get NAT bridge mode setting
+     */
+    suspend fun getNATBridgeMode(): String {
+        return dao.getUserPreferencesSync()?.natBridgeMode ?: "IPv4"
+    }
+
+    /**
+     * Set NAT bridge mode and persist to database
+     *
+     * @param mode NAT bridge mode
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setNATBridgeMode(mode: String) {
+        try {
+            dao.updateNATBridgeMode(mode)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set NAT bridge mode: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get show IP address setting
+     */
+    suspend fun getShowIPAddress(): Boolean {
+        return dao.getUserPreferencesSync()?.showIPAddress ?: true
+    }
+
+    /**
+     * Set show IP address and persist to database
+     *
+     * @param showIPAddress Show IP address enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setShowIPAddress(showIPAddress: Boolean) {
+        try {
+            dao.updateShowIPAddress(showIPAddress)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set show IP address: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get default folder path setting
+     */
+    suspend fun getDefaultFolderPath(): String {
+        return dao.getUserPreferencesSync()?.defaultFolderPath ?: "/sdcard"
+    }
+
+    /**
+     * Set default folder path and persist to database
+     *
+     * @param defaultFolderPath Default folder path
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setDefaultFolderPath(defaultFolderPath: String) {
+        try {
+            dao.updateDefaultFolderPath(defaultFolderPath)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set default folder path: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get show hidden files setting
+     */
+    suspend fun getShowHiddenFiles(): Boolean {
+        return dao.getUserPreferencesSync()?.showHiddenFiles ?: false
+    }
+
+    /**
+     * Set show hidden files and persist to database
+     *
+     * @param showHiddenFiles Show hidden files enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setShowHiddenFiles(showHiddenFiles: Boolean) {
+        try {
+            dao.updateShowHiddenFiles(showHiddenFiles)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set show hidden files: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get fastfetch theme setting
+     */
+    suspend fun getFastfetchTheme(): String {
+        return dao.getUserPreferencesSync()?.fastfetchTheme ?: "default"
+    }
+
+    /**
+     * Set fastfetch theme and persist to database
+     *
+     * @param fastfetchTheme Fastfetch theme name
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setFastfetchTheme(fastfetchTheme: String) {
+        try {
+            dao.updateFastfetchTheme(fastfetchTheme)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set fastfetch theme: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get show system info setting
+     */
+    suspend fun getShowSystemInfo(): Boolean {
+        return dao.getUserPreferencesSync()?.showSystemInfo ?: true
+    }
+
+    /**
+     * Set show system info and persist to database
+     *
+     * @param showSystemInfo Show system info enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setShowSystemInfo(showSystemInfo: Boolean) {
+        try {
+            dao.updateShowSystemInfo(showSystemInfo)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set show system info: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get terminal font size setting
+     */
+    suspend fun getTerminalFontSize(): Float {
+        return dao.getUserPreferencesSync()?.terminalFontSize ?: 12f
+    }
+
+    /**
+     * Set terminal font size and persist to database
+     *
+     * @param terminalFontSize Terminal font size value
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setTerminalFontSize(terminalFontSize: Float) {
+        try {
+            dao.updateTerminalFontSize(terminalFontSize)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set terminal font size: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get terminal theme setting
+     */
+    suspend fun getTerminalTheme(): String {
+        return dao.getUserPreferencesSync()?.terminalTheme ?: "default"
+    }
+
+    /**
+     * Set terminal theme and persist to database
+     *
+     * @param terminalTheme Terminal theme name
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setTerminalTheme(terminalTheme: String) {
+        try {
+            dao.updateTerminalTheme(terminalTheme)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set terminal theme: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get word wrap setting
+     */
+    suspend fun getWordWrap(): Boolean {
+        return dao.getUserPreferencesSync()?.wordWrap ?: true
+    }
+
+    /**
+     * Set word wrap and persist to database
+     *
+     * @param wordWrap Word wrap enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setWordWrap(wordWrap: Boolean) {
+        try {
+            dao.updateWordWrap(wordWrap)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set word wrap: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get default distro setting
+     */
+    suspend fun getDefaultDistro(): String {
+        return dao.getUserPreferencesSync()?.defaultDistro ?: "Ubuntu"
+    }
+
+    /**
+     * Set default distro and persist to database
+     *
+     * @param defaultDistro Default Linux distribution
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setDefaultDistro(defaultDistro: String) {
+        try {
+            dao.updateDefaultDistro(defaultDistro)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set default distro: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get auto update packages setting
+     */
+    suspend fun getAutoUpdatePackages(): Boolean {
+        return dao.getUserPreferencesSync()?.autoUpdatePackages ?: false
+    }
+
+    /**
+     * Set auto update packages and persist to database
+     *
+     * @param autoUpdatePackages Auto update packages enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setAutoUpdatePackages(autoUpdatePackages: Boolean) {
+        try {
+            dao.updateAutoUpdatePackages(autoUpdatePackages)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set auto update packages: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Get enable root access setting
+     */
+    suspend fun getEnableRootAccess(): Boolean {
+        return dao.getUserPreferencesSync()?.enableRootAccess ?: false
+    }
+
+    /**
+     * Get user preferences synchronously
+     *
+     * @return UserPreferences object or null if not found
+     */
+    suspend fun getUserPreferencesSync(): UserPreferences? {
+        return dao.getUserPreferencesSync()
+    }
+
+    /**
+     * Set enable root access and persist to database
+     *
+     * @param enableRootAccess Enable root access enabled
+     * @throws ThemeManagerException if database operation fails
+     */
+    suspend fun setEnableRootAccess(enableRootAccess: Boolean) {
+        try {
+            dao.updateEnableRootAccess(enableRootAccess)
+        } catch (e: Exception) {
+            throw ThemeManagerException("Failed to set enable root access: ${e.message}", e)
         }
     }
 }
