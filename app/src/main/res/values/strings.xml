@@ -1,0 +1,41 @@
+<resources>
+    <!-- App Info -->
+    <string name="app_name">Zcode Terminal</string>
+    <string name="app_description">Advanced Terminal Emulator for Android</string>
+
+    <!-- Navigation -->
+    <string name="nav_terminal">Terminal</string>
+    <string name="nav_files">Files</string>
+    <string name="nav_system">System</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Theme Settings -->
+    <string name="theme_title">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_amoled">AMOLED</string>
+    <string name="theme_custom">Custom</string>
+
+    <!-- Visual Effects -->
+    <string name="blur_intensity">Blur Intensity</string>
+    <string name="transparency">Transparency</string>
+    <string name="glassmorphism">Glassmorphism Effects</string>
+    <string name="enable_effects">Enable Effects</string>
+    <string name="disable_effects">Disable Effects</string>
+
+    <!-- General Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="general">General</string>
+    <string name="appearance">Appearance</string>
+    <string name="advanced">Advanced</string>
+    <string name="about">About</string>
+
+    <!-- Error Messages -->
+    <string name="error_loading_settings">Failed to load settings</string>
+    <string name="error_saving_settings">Failed to save settings</string>
+    <string name="error_unknown">An unknown error occurred</string>
+
+    <!-- Success Messages -->
+    <string name="success_theme_changed">Theme changed successfully</string>
+    <string name="success_settings_saved">Settings saved</string>
+</resources>
