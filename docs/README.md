@@ -2,6 +2,8 @@
 
 > An advanced Android terminal emulator with modern UI effects, networking features, and comprehensive file management.
 
+**Developed by [Mithun Kumar](https://github.com/mithun789)** - IT Student at SLIIT, Sri Lanka
+
 ![Status](https://img.shields.io/badge/Status-Phase%202%20Complete-success)
 ![Version](https://img.shields.io/badge/Version-1.0-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -277,6 +279,10 @@ This project is licensed under the MIT License - see LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
+**Developer**: Mithun Kumar ([@mithun789](https://github.com/mithun789))
+- IT Student at SLIIT, Sri Lanka
+- Passionate about Android development and modern UI/UX
+
 Built with:
 - Android Framework and Libraries
 - Jetpack Components
@@ -372,7 +378,12 @@ cd C:\Users\User\Documents\Zcode
 
 **Last Updated**: November 13, 2025
 **Version**: 1.0 - Phase 2 Complete
-**Status**: Ready for Testing and Phase 3 Implementation
+**Status**: Repository cleaned and pushed to GitHub
+**Recent Changes**:
+- Cleaned up build files from repository to reduce size
+- Removed unwanted documentation files
+- Pushed initial commit to GitHub (https://github.com/mithun789/Zcode)
+- Ready for Testing and Phase 3 Implementation
 
-Made with ❤️ for the Android community
+Made with ❤️ by Mithun Kumar for the Android community
 
