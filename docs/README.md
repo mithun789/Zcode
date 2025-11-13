@@ -115,12 +115,7 @@ Zcode/
 ├── gradle/
 │   └── libs.versions.toml                  # Dependency versions
 ├── docs/
-│   ├── IMPLEMENTATION_GUIDE.md             # Setup guide
-│   ├── PHASE2_COMPLETE.md                  # Feature details
-│   ├── QUICK_REFERENCE.md                  # Code examples
-│   ├── SETUP_TROUBLESHOOTING.md            # Debugging guide
-│   ├── FILE_INVENTORY.md                   # File listing
-│   └── PROJECT_SUMMARY.md                  # Project overview
+│   └── README.md                           # This file
 └── README.md                               # This file
 ```
 
@@ -171,22 +166,6 @@ lifecycleVersion = "2.8.4"
 navigationCompose = "2.8.0"
 kotlin = "2.0.21"
 ```
-
----
-
-## 📖 Documentation
-
-### Getting Started
-- **SETUP_TROUBLESHOOTING.md** - Initial setup and debugging
-- **IMPLEMENTATION_GUIDE.md** - Architecture and implementation details
-
-### Development Reference
-- **QUICK_REFERENCE.md** - Code snippets and common tasks
-- **FILE_INVENTORY.md** - Complete file listing with descriptions
-
-### Project Overview
-- **PHASE2_COMPLETE.md** - Detailed feature breakdown
-- **PROJECT_SUMMARY.md** - Comprehensive project status
 
 ---
 
@@ -271,15 +250,6 @@ adb shell sqlite3 /data/data/com.example.zcode/databases/zcode_database
 sqlite> SELECT * FROM user_preferences;
 ```
 
-### Common Issues
-See **SETUP_TROUBLESHOOTING.md** for:
-- Gradle sync issues
-- Hilt annotation errors
-- Theme not updating
-- Database errors
-- Network problems
-- File access issues
-
 ---
 
 ## 🤝 Contributing
@@ -362,10 +332,9 @@ Built with:
 ## 📞 Support
 
 For issues or questions:
-1. Check **SETUP_TROUBLESHOOTING.md**
-2. Review **QUICK_REFERENCE.md**
-3. See **PHASE2_COMPLETE.md** for details
-4. Check inline code documentation
+1. Check inline code documentation
+2. Review code comments
+3. See project structure
 
 ---
 
