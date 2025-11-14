@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.termux.view"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 27
-        targetSdk = 34
+        targetSdk = 36
     }
 
     buildFeatures {
