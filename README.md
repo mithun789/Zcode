@@ -151,7 +151,7 @@ Built-in themes:
 ### Prerequisites
 - Android Studio (latest)
 - Android SDK 36+
-- Kotlin 2.0+
+- Kotlin 1.9.22+
 - JDK 11+
 
 ### Build Steps
@@ -167,6 +167,9 @@ cd Zcode
 # Build release APK
 ./gradlew assembleRelease
 
+# Or use the automated build script
+./build-release.sh
+
 # Run tests
 ./gradlew test
 ```
@@ -174,6 +177,23 @@ cd Zcode
 Build output:
 - Debug: `app/build/outputs/apk/debug/app-debug.apk`
 - Release: `app/build/outputs/apk/release/app-release.apk`
+
+### Detailed Build Instructions
+
+See [RELEASE_BUILD_GUIDE.md](RELEASE_BUILD_GUIDE.md) for comprehensive build instructions including:
+- Release signing configuration
+- APK optimization
+- Publishing to GitHub Releases
+- Troubleshooting build issues
+
+### Testing
+
+See [TESTING_GUIDE.md](TESTING_GUIDE.md) for comprehensive testing procedures including:
+- Unit tests
+- Integration tests
+- Linux environment verification
+- Performance testing
+- Manual test scenarios
 
 ## Requirements
 
